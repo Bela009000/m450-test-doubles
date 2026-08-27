@@ -1,5 +1,25 @@
 # M450: Repeat unit testing in C#
 
+## Bankkonto-Projekt
+
+Die Solution enthält zusätzlich die Klassenbibliothek `M450.Bankkonto` und das
+xUnit-Projekt `M450.Bankkonto.Tests`. Das Bankkonto unterstützt Einzahlungen,
+Bezüge, Überweisungen sowie Aktiv- und Passivzinsen nach der 360-Tage-Methode.
+
+Die Zinssätze werden beim Erstellen eines Kontos als Prozentwerte festgelegt und
+sind danach schreibgeschützt. Beispiel: `new Bankkonto(1.5m, 5m, 1000m)` erstellt
+ein Konto mit 1,5 % Aktivzins, 5 % Passivzins und CHF 1'000 Startguthaben.
+
+```bash
+dotnet test tests/M450.Bankkonto.Tests
+```
+
+Die Beispielausführung der Klasse `Bank` kann ebenfalls direkt gestartet werden:
+
+```bash
+dotnet run --project src/M450.Bankkonto
+```
+
 This repository contains a small console application designed for practising the complete unit-testing workflow. The application calculates the price of an order from a unit price, a quantity, and an optional discount.
 
 The repository deliberately contains **no test project and no unit tests**. Your task is to create them yourself, decide which cases matter, and run the tests. This lets you repeat the setup instead of only editing prepared tests.
