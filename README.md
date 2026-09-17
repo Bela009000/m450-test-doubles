@@ -22,7 +22,12 @@ dotnet run --project src/M450.Bankkonto
 
 This repository contains a small console application designed for practising the complete unit-testing workflow. The application calculates the price of an order from a unit price, a quantity, and an optional discount.
 
-The repository deliberately contains **no test project and no unit tests**. Your task is to create them yourself, decide which cases matter, and run the tests. This lets you repeat the setup instead of only editing prepared tests.
+The `M450.UnitTesting.App` exercise deliberately contains **no corresponding test project and no unit tests**. Your task is to create them yourself, decide which cases matter, and run the tests. This lets you repeat the setup instead of only editing prepared tests.
+
+## Learning guides
+
+- [Arrange, Act, Assert (AAA)](AAA_PATTERN.md)
+- [Dependency injection and why it matters for testing](dependency-injection/README.md)
 
 ## Requirements
 
