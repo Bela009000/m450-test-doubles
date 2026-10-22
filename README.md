@@ -29,6 +29,7 @@ The `M450.UnitTesting.App` exercise deliberately contains **no corresponding tes
 - [Arrange, Act, Assert (AAA)](AAA_PATTERN.md)
 - [Dependency injection and why it matters for testing](dependency-injection/README.md)
 - [Test Doubles: Stub, Spy und Moq](test-doubles/README.md)
+- [Bottom-up-Integrationstests: Versandkosten](bottom-up-integration/README.md)
 
 ## Requirements
 
