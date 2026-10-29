@@ -2,7 +2,6 @@ namespace TestDoublesExercise;
 
 public sealed record Reservation(string CustomerEmail, string EventCode, int SeatCount);
 
-// Für diese Schnittstelle existiert in der Übung noch keine produktive Implementierung.
 public interface ISeatAvailability
 {
     int GetAvailableSeats(string eventCode);
@@ -10,8 +9,9 @@ public interface ISeatAvailability
 
 public interface IReservationRepository
 {
-    // Gibt false zurück, wenn die Reservierung nicht gespeichert werden konnte.
     bool TrySave(Reservation reservation);
+
+    bool TrySaveBatch(IReadOnlyList<Reservation> reservations);
 }
 
 public interface IConfirmationSender
@@ -64,6 +64,65 @@ public sealed class ReservationService
         }
 
         _sender.Send(reservation);
+        return true;
+    }
+
+    public bool ReserveBatch(IReadOnlyList<Reservation> requests)
+    {
+        ArgumentNullException.ThrowIfNull(requests);
+
+        if (requests.Count == 0)
+        {
+            throw new ArgumentException("Mindestens eine Reservierung ist erforderlich.", nameof(requests));
+        }
+
+        foreach (var request in requests)
+        {
+            if (request is null)
+            {
+                throw new ArgumentException("Die Liste darf keine leeren Einträge enthalten.", nameof(requests));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.CustomerEmail))
+            {
+                throw new ArgumentException("Jede Reservierung braucht eine E-Mail-Adresse.", nameof(requests));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.EventCode))
+            {
+                throw new ArgumentException("Jede Reservierung braucht einen Veranstaltungscode.", nameof(requests));
+            }
+
+            if (request.SeatCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(requests), "Jede Reservierung braucht mindestens einen Platz.");
+            }
+        }
+
+        var seatsPerEvent = requests
+            .GroupBy(request => request.EventCode)
+            .Select(group => new
+            {
+                Requested = group.Sum(request => request.SeatCount),
+                Available = _availability.GetAvailableSeats(group.Key),
+            })
+            .ToList();
+
+        if (seatsPerEvent.Any(seats => seats.Available < seats.Requested))
+        {
+            return false;
+        }
+
+        if (!_repository.TrySaveBatch(requests))
+        {
+            return false;
+        }
+
+        foreach (var reservation in requests)
+        {
+            _sender.Send(reservation);
+        }
+
         return true;
     }
 }
